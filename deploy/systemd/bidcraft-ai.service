@@ -1,0 +1,25 @@
+[Unit]
+Description=BidCraft AI service (local search and redaction preview)
+After=network.target postgresql.service
+Requires=postgresql.service
+
+[Service]
+User=bidcraft
+Group=bidcraft
+WorkingDirectory=/opt/bidcraft/ai-service
+EnvironmentFile=/etc/bidcraft/bidcraft.env
+ExecStart=/opt/bidcraft/ai-service/.venv/bin/uvicorn app.main:app --host 127.0.0.1 --port 8001 --workers 1
+Restart=always
+RestartSec=5
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/srv/bidcraft/files /opt/bidcraft/models
+PrivateTmp=true
+# shared server: lower priority and a memory ceiling (it only embeds search queries)
+Nice=5
+MemoryHigh=600M
+MemoryMax=1G
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,30 @@
+[Unit]
+Description=BidCraft worker (ingestion, RFP analysis, drafting, PDF assembly)
+After=network.target postgresql.service
+Requires=postgresql.service
+
+[Service]
+User=bidcraft
+Group=bidcraft
+WorkingDirectory=/opt/bidcraft/ai-service
+EnvironmentFile=/etc/bidcraft/bidcraft.env
+ExecStart=/opt/bidcraft/ai-service/.venv/bin/python -m app.worker
+Restart=always
+RestartSec=5
+KillSignal=SIGTERM
+# SIGTERM to the worker only, so the job in hand can finish; its OCR / LibreOffice children are left to it
+KillMode=mixed
+TimeoutStopSec=120
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/srv/bidcraft/files /opt/bidcraft/models
+PrivateTmp=true
+# shared server: lower priority, and a memory ceiling so only this service is affected if a job over-reaches
+Nice=10
+CPUWeight=50
+MemoryHigh=1200M
+MemoryMax=1800M
+
+[Install]
+WantedBy=multi-user.target

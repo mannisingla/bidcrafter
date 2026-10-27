@@ -1,0 +1,14 @@
+web/node_modules/
+web/.angular/
+ai-service/.venv/
+ai-service/**/__pycache__/
+api/bin/
+api/obj/
+*.log
+web/dist/
+web/public/downloads/*.exe
+signer/bin/
+signer/obj/
+**/.pytest_cache/
+*.env
+!deploy/bidcraft.env.example

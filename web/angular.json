@@ -1,0 +1,88 @@
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "version": 1,
+  "newProjectRoot": "projects",
+  "cli": {
+    "analytics": false
+  },
+  "projects": {
+    "bidcraft-web": {
+      "projectType": "application",
+      "root": "",
+      "sourceRoot": "src",
+      "prefix": "bc",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:application",
+          "options": {
+            "outputPath": "dist/bidcraft-web",
+            "index": "src/index.html",
+            "browser": "src/main.ts",
+            "polyfills": [
+              "zone.js"
+            ],
+            "tsConfig": "tsconfig.app.json",
+            "assets": [
+              {
+                "glob": "**/*",
+                "input": "public"
+              },
+              {
+                "glob": "pdf.worker.min.mjs",
+                "input": "node_modules/pdfjs-dist/legacy/build/",
+                "output": "assets/pdfjs/"
+              }
+            ],
+            "styles": [
+              "node_modules/@fontsource/source-sans-3/400.css",
+              "node_modules/@fontsource/source-sans-3/500.css",
+              "node_modules/@fontsource/source-sans-3/600.css",
+              "node_modules/@fontsource/source-sans-3/700.css",
+              "node_modules/@fontsource/source-serif-4/400.css",
+              "node_modules/@fontsource/source-serif-4/600.css",
+              "node_modules/@fontsource/source-serif-4/700.css",
+              "node_modules/@fontsource/great-vibes/400.css",
+              "node_modules/@fontsource/dancing-script/600.css",
+              "src/styles.css"
+            ]
+          },
+          "configurations": {
+            "production": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "4mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "8kb",
+                  "maximumError": "16kb"
+                }
+              ],
+              "outputHashing": "all"
+            },
+            "development": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve": {
+          "builder": "@angular/build:dev-server",
+          "configurations": {
+            "production": {
+              "buildTarget": "bidcraft-web:build:production"
+            },
+            "development": {
+              "buildTarget": "bidcraft-web:build:development"
+            }
+          },
+          "defaultConfiguration": "development"
+        }
+      }
+    }
+  }
+}

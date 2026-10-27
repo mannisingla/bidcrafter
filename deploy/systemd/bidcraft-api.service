@@ -1,0 +1,22 @@
+[Unit]
+Description=BidCraft API (.NET)
+After=network.target postgresql.service
+Requires=postgresql.service
+
+[Service]
+User=bidcraft
+Group=bidcraft
+WorkingDirectory=/opt/bidcraft/api
+EnvironmentFile=/etc/bidcraft/bidcraft.env
+Environment=DOTNET_CLI_TELEMETRY_OPTOUT=1
+ExecStart=/usr/bin/dotnet /opt/bidcraft/api/BidCraft.Api.dll
+Restart=always
+RestartSec=5
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/srv/bidcraft/files
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

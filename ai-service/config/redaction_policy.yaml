@@ -1,0 +1,58 @@
+# BidCraft outbound data policy
+# ---------------------------------------------------------------------------
+# Every request to the external model passes through app/privacy/gateway.py,
+# which applies this file. Edit it, then restart the worker.
+
+# Requests are sent without a review step: what may leave is set by the limits and the
+# redaction rules below. Library documents marked "restricted" are never sent; every
+# request is recorded (payload, redactions) and listed in the audit log.
+
+# How much may leave per request. Evidence beyond these limits is dropped
+# locally and listed in the request's redaction summary.
+limits:
+  default:
+    max_evidence_items: 8
+    max_chars_per_item: 4000
+    max_chars_per_request: 20000
+  rfp_extraction:
+    max_evidence_items: 24        # several documents per tender: main sections plus whole amendments
+    max_chars_per_item: 16000
+    max_chars_per_request: 120000
+  cv_extraction:
+    max_evidence_items: 1
+    max_chars_per_item: 16000
+    max_chars_per_request: 16000
+  po_extraction:
+    max_evidence_items: 1
+    max_chars_per_item: 14000
+    max_chars_per_request: 14000
+  project_extraction:
+    max_evidence_items: 5
+    max_chars_per_item: 8000
+    max_chars_per_request: 24000
+  section_redraft:          # the whole current section goes as one item, so it is never cut short
+    max_evidence_items: 9
+    max_chars_per_item: 12000
+    max_chars_per_request: 36000
+  section_drafting:
+    max_evidence_items: 10
+    max_chars_per_item: 3500
+    max_chars_per_request: 24000
+
+# What happens when an entity is found in outbound text:
+#   redact - replaced by a token such as [[PAN_1]]; restored locally in the answer
+#   block  - the whole request is refused and logged
+#   allow  - sent as is
+entities:
+  GSTIN: redact
+  PAN: redact
+  AADHAAR: block
+  BANK_ACCOUNT: block
+  IFSC: redact
+  EMAIL: redact
+  PHONE: redact
+  PERSON: redact          # names on CVs in the HR library, and "Mr./Ms./Shri ..." patterns
+  CUSTOM: redact
+
+# Terms that are always redacted (client code names, internal project names...).
+custom_terms: []
